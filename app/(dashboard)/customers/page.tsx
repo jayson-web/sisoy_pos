@@ -13,6 +13,13 @@ interface Customer {
   created_at: string
 }
 
+interface ModalState {
+  isOpen: boolean
+  type: "success" | "error" | null
+  title: string
+  message: string
+}
+
 export default function CustomersPage() {
   const [customers, setCustomers] = useState<Customer[]>([])
   const [loading, setLoading] = useState(false)
@@ -26,6 +33,12 @@ export default function CustomersPage() {
     address: "",
   })
   const [searchTerm, setSearchTerm] = useState("")
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    type: null,
+    title: "",
+    message: "",
+  })
 
   useEffect(() => {
     loadCustomers()
@@ -54,19 +67,39 @@ export default function CustomersPage() {
 
     // Strict validation
     if (!formData.first_name.trim()) {
-      alert("First Name is required")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Validation Error",
+        message: "First Name is required",
+      })
       return
     }
     if (!formData.last_name.trim()) {
-      alert("Last Name is required")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Validation Error",
+        message: "Last Name is required",
+      })
       return
     }
     if (formData.email && !isValidEmail(formData.email)) {
-      alert("Email must contain @ symbol (e.g., user@example.com)")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Validation Error",
+        message: "Email must contain @ symbol (e.g., user@example.com)",
+      })
       return
     }
     if (formData.phone && !isValidPhoneNumber(formData.phone)) {
-      alert("Phone Number must contain only numbers")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Validation Error",
+        message: "Phone Number must contain only numbers",
+      })
       return
     }
 
@@ -83,9 +116,19 @@ export default function CustomersPage() {
         if (resp.ok) {
           await loadCustomers()
           resetForm()
-          alert("Customer updated successfully")
+          setModal({
+            isOpen: true,
+            type: "success",
+            title: "Success",
+            message: "Customer updated successfully",
+          })
         } else {
-          alert("Failed to update customer")
+          setModal({
+            isOpen: true,
+            type: "error",
+            title: "Error",
+            message: "Failed to update customer",
+          })
         }
       } else {
         // Create
@@ -97,14 +140,29 @@ export default function CustomersPage() {
         if (resp.ok) {
           await loadCustomers()
           resetForm()
-          alert("Customer created successfully")
+          setModal({
+            isOpen: true,
+            type: "success",
+            title: "Success",
+            message: "Customer created successfully",
+          })
         } else {
-          alert("Failed to create customer")
+          setModal({
+            isOpen: true,
+            type: "error",
+            title: "Error",
+            message: "Failed to create customer",
+          })
         }
       }
     } catch (error) {
       console.error("Error saving customer:", error)
-      alert("Error saving customer")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Error",
+        message: "Error saving customer",
+      })
     }
   }
 
@@ -125,8 +183,6 @@ export default function CustomersPage() {
   }
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Delete this customer? Active bookings will prevent deletion.")) return
-
     const apiBase = getApiBase()
     try {
       const resp = await fetch(`${apiBase}/customers?id=${id}`, {
@@ -135,14 +191,29 @@ export default function CustomersPage() {
 
       if (resp.ok) {
         await loadCustomers()
-        alert("Customer deleted successfully")
+        setModal({
+          isOpen: true,
+          type: "success",
+          title: "Success",
+          message: "Customer deleted successfully",
+        })
       } else {
         const errorData = await resp.json()
-        alert(`Failed to delete: ${errorData.error}`)
+        setModal({
+          isOpen: true,
+          type: "error",
+          title: "Error",
+          message: `Failed to delete: ${errorData.error}`,
+        })
       }
     } catch (error) {
       console.error("Error deleting customer:", error)
-      alert("Error deleting customer")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Error",
+        message: "Error deleting customer",
+      })
     }
   }
 

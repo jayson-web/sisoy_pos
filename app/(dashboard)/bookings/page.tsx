@@ -7,9 +7,23 @@ import { getApiBase } from "@/lib/api"
 
 type FilterStatus = "all" | "today" | "upcoming" | "completed" | "cancelled"
 
+interface ModalState {
+  isOpen: boolean
+  type: "success" | "error" | "confirm" | null
+  title: string
+  message: string
+  action?: () => void
+}
+
 export default function BookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
   const [filter, setFilter] = useState<FilterStatus>("all")
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    type: null,
+    title: "",
+    message: "",
+  })
 
   useEffect(() => {
     // Sync bookings from server on mount
@@ -74,8 +88,6 @@ export default function BookingsPage() {
   }
 
   const handleDelete = async (id: string) => {
-    if (!confirm("Are you sure you want to delete this booking?")) return
-
     const apiBase = getApiBase()
     try {
       const resp = await fetch(`${apiBase}/bookings?id=${id}`, {
@@ -86,14 +98,29 @@ export default function BookingsPage() {
         // Remove from local storage after successful DB deletion
         storage.deleteBooking(id)
         setBookings(storage.getBookings())
-        alert("Booking deleted successfully")
+        setModal({
+          isOpen: true,
+          type: "success",
+          title: "Success",
+          message: "Booking deleted successfully",
+        })
       } else {
         const errorData = await resp.json()
-        alert(`Failed to delete booking: ${errorData.error || 'Unknown error'}`)
+        setModal({
+          isOpen: true,
+          type: "error",
+          title: "Error",
+          message: `Failed to delete booking: ${errorData.error || 'Unknown error'}`,
+        })
       }
     } catch (error) {
       console.error("Error deleting booking:", error)
-      alert("Error deleting booking")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Error",
+        message: "Error deleting booking",
+      })
     }
   }
 
@@ -201,6 +228,28 @@ export default function BookingsPage() {
       {filteredBookings.length === 0 && (
         <div className="text-center py-12 bg-(--gray-bg) rounded">
           <p className="text-(--gray-dark)">No bookings found.</p>
+        </div>
+      )}
+
+      {/* Modal */}
+      {modal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className={`bg-white rounded-lg p-6 max-w-sm w-full shadow-lg border-l-4 ${
+            modal.type === "success" ? "border-green-500" : "border-red-500"
+          }`}>
+            <h2 className={`text-lg font-bold mb-2 ${
+              modal.type === "success" ? "text-green-600" : "text-red-600"
+            }`}>
+              {modal.title}
+            </h2>
+            <p className="text-gray-700 mb-6">{modal.message}</p>
+            <button
+              onClick={() => setModal({ ...modal, isOpen: false })}
+              className="w-full py-2 bg-(--primary-blue) text-white rounded font-bold hover:bg-blue-900 transition-colors"
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
     </div>

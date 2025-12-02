@@ -6,6 +6,13 @@ import { useState, useEffect } from "react"
 import { storage, type Accommodation } from "@/lib/storage"
 import { getApiBase } from "@/lib/api"
 
+interface ModalState {
+  isOpen: boolean
+  type: "success" | "error" | null
+  title: string
+  message: string
+}
+
 export default function AccommodationsPage() {
   const [accommodations, setAccommodations] = useState<any[]>([])
   const [showForm, setShowForm] = useState(false)
@@ -19,6 +26,12 @@ export default function AccommodationsPage() {
     status: "active",
   })
   const [loading, setLoading] = useState(false)
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    type: null,
+    title: "",
+    message: "",
+  })
 
   useEffect(() => {
     loadAccommodations()
@@ -67,9 +80,19 @@ export default function AccommodationsPage() {
         if (resp.ok) {
           await loadAccommodations()
           resetForm()
-          alert("Accommodation updated successfully")
+          setModal({
+            isOpen: true,
+            type: "success",
+            title: "Success",
+            message: "Accommodation updated successfully",
+          })
         } else {
-          alert("Failed to update accommodation")
+          setModal({
+            isOpen: true,
+            type: "error",
+            title: "Error",
+            message: "Failed to update accommodation",
+          })
         }
       } else {
         // Create
@@ -81,20 +104,33 @@ export default function AccommodationsPage() {
         if (resp.ok) {
           await loadAccommodations()
           resetForm()
-          alert("Accommodation created successfully")
+          setModal({
+            isOpen: true,
+            type: "success",
+            title: "Success",
+            message: "Accommodation created successfully",
+          })
         } else {
-          alert("Failed to create accommodation")
+          setModal({
+            isOpen: true,
+            type: "error",
+            title: "Error",
+            message: "Failed to create accommodation",
+          })
         }
       }
     } catch (error) {
       console.error("Error saving accommodation:", error)
-      alert("Error saving accommodation")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Error",
+        message: "Error saving accommodation",
+      })
     }
   }
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Delete this accommodation? Any draft bookings will remain.")) return
-
     const apiBase = getApiBase()
     try {
       const resp = await fetch(`${apiBase}/accommodations?id=${id}`, {
@@ -103,14 +139,29 @@ export default function AccommodationsPage() {
       
       if (resp.ok) {
         await loadAccommodations()
-        alert("Accommodation deleted successfully")
+        setModal({
+          isOpen: true,
+          type: "success",
+          title: "Success",
+          message: "Accommodation deleted successfully",
+        })
       } else {
         const errorData = await resp.json()
-        alert(`Failed to delete: ${errorData.error}`)
+        setModal({
+          isOpen: true,
+          type: "error",
+          title: "Error",
+          message: `Failed to delete: ${errorData.error}`,
+        })
       }
     } catch (error) {
       console.error("Error deleting accommodation:", error)
-      alert("Error deleting accommodation")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Error",
+        message: "Error deleting accommodation",
+      })
     }
   }
 
@@ -273,6 +324,28 @@ export default function AccommodationsPage() {
       {accommodations.length === 0 && (
         <div className="text-center py-12 bg-(--gray-bg) rounded">
           <p className="text-(--gray-dark)">No accommodations found.</p>
+        </div>
+      )}
+
+      {/* Modal */}
+      {modal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className={`bg-white rounded-lg p-6 max-w-sm w-full shadow-lg border-l-4 ${
+            modal.type === "success" ? "border-green-500" : "border-red-500"
+          }`}>
+            <h2 className={`text-lg font-bold mb-2 ${
+              modal.type === "success" ? "text-green-600" : "text-red-600"
+            }`}>
+              {modal.title}
+            </h2>
+            <p className="text-gray-700 mb-6">{modal.message}</p>
+            <button
+              onClick={() => setModal({ ...modal, isOpen: false })}
+              className="w-full py-2 bg-(--primary-blue) text-white rounded font-bold hover:bg-blue-900 transition-colors"
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
     </div>
