@@ -8,6 +8,14 @@ import CustomerForm from "@/components/booking/customer-form"
 import RoomGrid from "@/components/booking/room-grid"
 import BillingPanel from "@/components/booking/billing-panel"
 
+interface ModalState {
+  isOpen: boolean
+  type: "success" | "error" | "confirm" | null
+  title: string
+  message: string
+  action?: () => void
+}
+
 export default function NewBookingPage() {
   const router = useRouter()
   const [selectedClient, setSelectedClient] = useState("")
@@ -15,6 +23,12 @@ export default function NewBookingPage() {
   const [checkOut, setCheckOut] = useState("")
   const [selectedRoom, setSelectedRoom] = useState("")
   const [clients, setClients] = useState<Client[]>([])
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    type: null,
+    title: "",
+    message: "",
+  })
 
   useEffect(() => {
     setClients(storage.getClients())
@@ -39,7 +53,12 @@ export default function NewBookingPage() {
 
   const handleProceedToPayment = () => {
     if (!selectedClient || !checkIn || !checkOut || !selectedRoom) {
-      alert("Please fill all fields and select a room")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Incomplete Form",
+        message: "Please fill all fields and select a room",
+      })
       return
     }
 
@@ -55,8 +74,18 @@ export default function NewBookingPage() {
       paymentStatus: "unpaid" as const,
     }
 
-    sessionStorage.setItem("tempBooking", JSON.stringify(booking))
-    router.push(`/booking/payment?bookingId=${booking.id}&amount=${booking.totalAmount}`)
+    // Show confirmation modal
+    setModal({
+      isOpen: true,
+      type: "confirm",
+      title: "Confirm Booking",
+      message: `Proceed to payment for ${calculateNights()} nights (₱${totalAmount().toLocaleString()})?`,
+      action: () => {
+        sessionStorage.setItem("tempBooking", JSON.stringify(booking))
+        setModal({ ...modal, isOpen: false })
+        router.push(`/booking/payment?bookingId=${booking.id}&amount=${booking.totalAmount}`)
+      },
+    })
   }
 
   return (
@@ -147,6 +176,47 @@ export default function NewBookingPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {modal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className={`bg-white rounded-lg p-6 max-w-sm w-full shadow-lg border-l-4 ${
+            modal.type === "confirm" ? "border-blue-500" : modal.type === "success" ? "border-green-500" : "border-red-500"
+          }`}>
+            <h2 className={`text-lg font-bold mb-2 ${
+              modal.type === "confirm" ? "text-blue-600" : modal.type === "success" ? "text-green-600" : "text-red-600"
+            }`}>
+              {modal.title}
+            </h2>
+            <p className="text-gray-700 mb-6">{modal.message}</p>
+            <div className="flex gap-3">
+              {modal.type === "confirm" ? (
+                <>
+                  <button
+                    onClick={modal.action}
+                    className="flex-1 py-2 bg-yellow-400 text-blue-900 rounded font-bold hover:bg-yellow-500 transition-colors"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    onClick={() => setModal({ ...modal, isOpen: false })}
+                    className="flex-1 py-2 bg-gray-300 text-gray-800 rounded font-bold hover:bg-gray-400 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setModal({ ...modal, isOpen: false })}
+                  className="w-full py-2 bg-(--primary-blue) text-white rounded font-bold hover:bg-blue-900 transition-colors"
+                >
+                  Close
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

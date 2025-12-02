@@ -28,6 +28,12 @@ function AccommodationsPage() {
         status: "active"
     });
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(false);
+    const [modal, setModal] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
+        isOpen: false,
+        type: null,
+        title: "",
+        message: ""
+    });
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         loadAccommodations();
     }, []);
@@ -74,9 +80,19 @@ function AccommodationsPage() {
                 if (resp.ok) {
                     await loadAccommodations();
                     resetForm();
-                    alert("Accommodation updated successfully");
+                    setModal({
+                        isOpen: true,
+                        type: "success",
+                        title: "Success",
+                        message: "Accommodation updated successfully"
+                    });
                 } else {
-                    alert("Failed to update accommodation");
+                    setModal({
+                        isOpen: true,
+                        type: "error",
+                        title: "Error",
+                        message: "Failed to update accommodation"
+                    });
                 }
             } else {
                 // Create
@@ -90,18 +106,32 @@ function AccommodationsPage() {
                 if (resp.ok) {
                     await loadAccommodations();
                     resetForm();
-                    alert("Accommodation created successfully");
+                    setModal({
+                        isOpen: true,
+                        type: "success",
+                        title: "Success",
+                        message: "Accommodation created successfully"
+                    });
                 } else {
-                    alert("Failed to create accommodation");
+                    setModal({
+                        isOpen: true,
+                        type: "error",
+                        title: "Error",
+                        message: "Failed to create accommodation"
+                    });
                 }
             }
         } catch (error) {
             console.error("Error saving accommodation:", error);
-            alert("Error saving accommodation");
+            setModal({
+                isOpen: true,
+                type: "error",
+                title: "Error",
+                message: "Error saving accommodation"
+            });
         }
     };
     const handleDelete = async (id)=>{
-        if (!confirm("Delete this accommodation? Any draft bookings will remain.")) return;
         const apiBase = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getApiBase"])();
         try {
             const resp = await fetch(`${apiBase}/accommodations?id=${id}`, {
@@ -109,14 +139,29 @@ function AccommodationsPage() {
             });
             if (resp.ok) {
                 await loadAccommodations();
-                alert("Accommodation deleted successfully");
+                setModal({
+                    isOpen: true,
+                    type: "success",
+                    title: "Success",
+                    message: "Accommodation deleted successfully"
+                });
             } else {
                 const errorData = await resp.json();
-                alert(`Failed to delete: ${errorData.error}`);
+                setModal({
+                    isOpen: true,
+                    type: "error",
+                    title: "Error",
+                    message: `Failed to delete: ${errorData.error}`
+                });
             }
         } catch (error) {
             console.error("Error deleting accommodation:", error);
-            alert("Error deleting accommodation");
+            setModal({
+                isOpen: true,
+                type: "error",
+                title: "Error",
+                message: "Error deleting accommodation"
+            });
         }
     };
     const resetForm = ()=>{
@@ -149,7 +194,7 @@ function AccommodationsPage() {
             children: "Loading accommodations..."
         }, void 0, false, {
             fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-            lineNumber: 144,
+            lineNumber: 195,
             columnNumber: 12
         }, this);
     }
@@ -164,7 +209,7 @@ function AccommodationsPage() {
                         children: "Accommodations"
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                        lineNumber: 150,
+                        lineNumber: 201,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -173,13 +218,13 @@ function AccommodationsPage() {
                         children: "Add Accommodation"
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                        lineNumber: 151,
+                        lineNumber: 202,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                lineNumber: 149,
+                lineNumber: 200,
                 columnNumber: 7
             }, this),
             showForm && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -193,7 +238,7 @@ function AccommodationsPage() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                        lineNumber: 162,
+                        lineNumber: 213,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -215,7 +260,7 @@ function AccommodationsPage() {
                                         className: "px-3 py-2 border border-(--gray-light) rounded"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 165,
+                                        lineNumber: 216,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -231,7 +276,7 @@ function AccommodationsPage() {
                                                 children: "Villa"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                                lineNumber: 178,
+                                                lineNumber: 229,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -239,7 +284,7 @@ function AccommodationsPage() {
                                                 children: "Cottage"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                                lineNumber: 179,
+                                                lineNumber: 230,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -247,19 +292,19 @@ function AccommodationsPage() {
                                                 children: "Room"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                                lineNumber: 180,
+                                                lineNumber: 231,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 173,
+                                        lineNumber: 224,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                lineNumber: 164,
+                                lineNumber: 215,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
@@ -273,7 +318,7 @@ function AccommodationsPage() {
                                 rows: 3
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                lineNumber: 183,
+                                lineNumber: 234,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -290,7 +335,7 @@ function AccommodationsPage() {
                                         className: "px-3 py-2 border border-(--gray-light) rounded"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 191,
+                                        lineNumber: 242,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -304,7 +349,7 @@ function AccommodationsPage() {
                                         className: "px-3 py-2 border border-(--gray-light) rounded"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 198,
+                                        lineNumber: 249,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("select", {
@@ -320,7 +365,7 @@ function AccommodationsPage() {
                                                 children: "Active"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                                lineNumber: 210,
+                                                lineNumber: 261,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -328,7 +373,7 @@ function AccommodationsPage() {
                                                 children: "Maintenance"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                                lineNumber: 211,
+                                                lineNumber: 262,
                                                 columnNumber: 17
                                             }, this),
                                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("option", {
@@ -336,19 +381,19 @@ function AccommodationsPage() {
                                                 children: "Inactive"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                                lineNumber: 212,
+                                                lineNumber: 263,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 205,
+                                        lineNumber: 256,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                lineNumber: 190,
+                                lineNumber: 241,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -360,7 +405,7 @@ function AccommodationsPage() {
                                         children: "Save"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 216,
+                                        lineNumber: 267,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -370,25 +415,25 @@ function AccommodationsPage() {
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 222,
+                                        lineNumber: 273,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                lineNumber: 215,
+                                lineNumber: 266,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                        lineNumber: 163,
+                        lineNumber: 214,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                lineNumber: 161,
+                lineNumber: 212,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -404,7 +449,7 @@ function AccommodationsPage() {
                                         children: acc.name
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 239,
+                                        lineNumber: 290,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -412,13 +457,13 @@ function AccommodationsPage() {
                                         children: acc.type
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 240,
+                                        lineNumber: 291,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                lineNumber: 238,
+                                lineNumber: 289,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -426,7 +471,7 @@ function AccommodationsPage() {
                                 children: acc.description
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                lineNumber: 242,
+                                lineNumber: 293,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -438,7 +483,7 @@ function AccommodationsPage() {
                                                 children: "Capacity:"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                                lineNumber: 245,
+                                                lineNumber: 296,
                                                 columnNumber: 17
                                             }, this),
                                             " ",
@@ -447,7 +492,7 @@ function AccommodationsPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 244,
+                                        lineNumber: 295,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -456,7 +501,7 @@ function AccommodationsPage() {
                                                 children: "Price:"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                                lineNumber: 248,
+                                                lineNumber: 299,
                                                 columnNumber: 17
                                             }, this),
                                             " ₱",
@@ -465,7 +510,7 @@ function AccommodationsPage() {
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 247,
+                                        lineNumber: 298,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
@@ -474,7 +519,7 @@ function AccommodationsPage() {
                                                 children: "Status:"
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                                lineNumber: 251,
+                                                lineNumber: 302,
                                                 columnNumber: 17
                                             }, this),
                                             " ",
@@ -483,19 +528,19 @@ function AccommodationsPage() {
                                                 children: acc.status
                                             }, void 0, false, {
                                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                                lineNumber: 252,
+                                                lineNumber: 303,
                                                 columnNumber: 17
                                             }, this)
                                         ]
                                     }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 250,
+                                        lineNumber: 301,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                lineNumber: 243,
+                                lineNumber: 294,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -507,7 +552,7 @@ function AccommodationsPage() {
                                         children: "Edit"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 256,
+                                        lineNumber: 307,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -516,24 +561,24 @@ function AccommodationsPage() {
                                         children: "Delete"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                        lineNumber: 262,
+                                        lineNumber: 313,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                                lineNumber: 255,
+                                lineNumber: 306,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, acc.id, true, {
                         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                        lineNumber: 237,
+                        lineNumber: 288,
                         columnNumber: 11
                     }, this))
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                lineNumber: 235,
+                lineNumber: 286,
                 columnNumber: 7
             }, this),
             accommodations.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -543,18 +588,62 @@ function AccommodationsPage() {
                     children: "No accommodations found."
                 }, void 0, false, {
                     fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                    lineNumber: 275,
+                    lineNumber: 326,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-                lineNumber: 274,
+                lineNumber: 325,
+                columnNumber: 9
+            }, this),
+            modal.isOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4",
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: `bg-white rounded-lg p-6 max-w-sm w-full shadow-lg border-l-4 ${modal.type === "success" ? "border-green-500" : "border-red-500"}`,
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                            className: `text-lg font-bold mb-2 ${modal.type === "success" ? "text-green-600" : "text-red-600"}`,
+                            children: modal.title
+                        }, void 0, false, {
+                            fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
+                            lineNumber: 336,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            className: "text-gray-700 mb-6",
+                            children: modal.message
+                        }, void 0, false, {
+                            fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
+                            lineNumber: 341,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            onClick: ()=>setModal({
+                                    ...modal,
+                                    isOpen: false
+                                }),
+                            className: "w-full py-2 bg-(--primary-blue) text-white rounded font-bold hover:bg-blue-900 transition-colors",
+                            children: "Close"
+                        }, void 0, false, {
+                            fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
+                            lineNumber: 342,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
+                    lineNumber: 333,
+                    columnNumber: 11
+                }, this)
+            }, void 0, false, {
+                fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
+                lineNumber: 332,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/accommodations/page.tsx",
-        lineNumber: 148,
+        lineNumber: 199,
         columnNumber: 5
     }, this);
 }

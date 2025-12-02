@@ -4,11 +4,25 @@ import { useState, useEffect } from "react"
 import { useRouter, useParams } from "next/navigation"
 import { storage, type Booking } from "@/lib/storage"
 
+interface ModalState {
+  isOpen: boolean
+  type: "success" | "error" | "confirm" | null
+  title: string
+  message: string
+  action?: () => void
+}
+
 export default function BookingDetailsPage() {
   const router = useRouter()
   const params = useParams()
   const bookingId = params.id as string
   const [booking, setBooking] = useState<Booking | null>(null)
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    type: null,
+    title: "",
+    message: "",
+  })
 
   useEffect(() => {
     const b = storage.getBookings().find((b) => b.id === bookingId)
@@ -26,16 +40,44 @@ export default function BookingDetailsPage() {
   )
 
   const handleStatusChange = (newStatus: string) => {
-    storage.updateBooking(bookingId, { status: newStatus as any })
-    setBooking({ ...booking, status: newStatus as any })
+    setModal({
+      isOpen: true,
+      type: "confirm",
+      title: "Update Booking Status",
+      message: `Change status from "${booking?.status}" to "${newStatus}"?`,
+      action: () => {
+        storage.updateBooking(bookingId, { status: newStatus as any })
+        setBooking({ ...booking!, status: newStatus as any })
+        setModal({
+          isOpen: true,
+          type: "success",
+          title: "Success",
+          message: `Booking status updated to ${newStatus}`,
+        })
+      },
+    })
   }
 
   const handlePaymentStatus = () => {
-    storage.updateBooking(bookingId, {
-      paymentStatus: "paid",
-      transactionId: `TEST${Date.now()}`,
+    setModal({
+      isOpen: true,
+      type: "confirm",
+      title: "Mark as Paid",
+      message: "Are you sure you want to mark this booking as paid?",
+      action: () => {
+        storage.updateBooking(bookingId, {
+          paymentStatus: "paid",
+          transactionId: `TEST${Date.now()}`,
+        })
+        setBooking({ ...booking!, paymentStatus: "paid", transactionId: `TEST${Date.now()}` })
+        setModal({
+          isOpen: true,
+          type: "success",
+          title: "Success",
+          message: "Booking marked as paid",
+        })
+      },
     })
-    setBooking({ ...booking, paymentStatus: "paid" })
   }
 
   return (
@@ -174,6 +216,47 @@ export default function BookingDetailsPage() {
           </div>
         </div>
       </div>
+
+      {/* Modal */}
+      {modal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className={`bg-white rounded-lg p-6 max-w-sm w-full shadow-lg border-l-4 ${
+            modal.type === "confirm" ? "border-blue-500" : modal.type === "success" ? "border-green-500" : "border-red-500"
+          }`}>
+            <h2 className={`text-lg font-bold mb-2 ${
+              modal.type === "confirm" ? "text-blue-600" : modal.type === "success" ? "text-green-600" : "text-red-600"
+            }`}>
+              {modal.title}
+            </h2>
+            <p className="text-gray-700 mb-6">{modal.message}</p>
+            <div className="flex gap-3">
+              {modal.type === "confirm" ? (
+                <>
+                  <button
+                    onClick={modal.action}
+                    className="flex-1 py-2 bg-blue-500 text-white rounded font-bold hover:bg-blue-600 transition-colors"
+                  >
+                    Yes
+                  </button>
+                  <button
+                    onClick={() => setModal({ ...modal, isOpen: false })}
+                    className="flex-1 py-2 bg-gray-300 text-gray-800 rounded font-bold hover:bg-gray-400 transition-colors"
+                  >
+                    No
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => setModal({ ...modal, isOpen: false })}
+                  className="w-full py-2 bg-(--primary-blue) text-white rounded font-bold hover:bg-blue-900 transition-colors"
+                >
+                  Close
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
