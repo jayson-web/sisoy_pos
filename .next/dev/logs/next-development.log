@@ -231,3 +231,12 @@
 [00:04:36.693] Server  LOG     Transaction inserted successfully
 [00:04:36.694] Server  LOG     Inserting payment: {}
 [00:04:36.696] Server  LOG     Payment inserted successfully
+[00:07:43.676] Server  LOG      ✓ Compiled in 135ms
+[00:07:52.076] Server  LOG      ✓ Compiled in 155ms
+[00:07:54.318] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:09:24.286] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:10:29.892] Server  LOG      ✓ Compiled in 78ms
+[00:10:44.936] Server  LOG      ✓ Compiled in 138ms
+[00:11:18.681] Server  LOG      ✓ Compiled in 52ms
+[00:11:22.393] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:11:44.913] Server  LOG      ✓ Compiled in 118ms
