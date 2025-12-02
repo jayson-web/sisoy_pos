@@ -198,6 +198,12 @@ async function POST(request) {
         const action = searchParams.get('action');
         if (action === 'create') {
             const body = await request.json();
+            console.log('Booking creation request received:', {
+                customer_id: body.customer_id,
+                accommodation_id: body.accommodation_id,
+                total_price: body.total_price,
+                payment_method: body.payment_method
+            });
             // Validate required fields (accommodation_id may be non-numeric from legacy/local storage)
             const required = [
                 'customer_id',
@@ -260,6 +266,13 @@ async function POST(request) {
             // Record transaction for this booking (transactions table)
             let transactionReference = `TXN-${bookingNumber}`;
             try {
+                console.log('Inserting transaction:', {
+                    booking_id: bookingId,
+                    customer_id: customerId,
+                    amount: body.total_price,
+                    payment_method: body.payment_method || 'cash',
+                    transaction_reference: transactionReference
+                });
                 await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$db$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["query"])(`INSERT INTO transactions (booking_id, customer_id, amount, payment_method, status, transaction_reference, description) 
            VALUES (?, ?, ?, ?, 'completed', ?, ?)`, [
                     bookingId,
@@ -269,17 +282,25 @@ async function POST(request) {
                     transactionReference,
                     `Payment for booking ${bookingNumber}`
                 ]);
+                console.log('Transaction inserted successfully');
             } catch (txnError) {
                 console.error('Transaction record error (non-fatal):', txnError);
             }
             // Also insert into payments table for easier receipt reporting (best-effort)
             try {
-                await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$db$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["query"])(`INSERT INTO payments (booking_id, amount, method, status, transaction_reference) VALUES (?, ?, ?, 'paid', ?)`, [
+                console.log('Inserting payment:', {
+                    booking_id: bookingId,
+                    amount: body.total_price,
+                    payment_method: body.payment_method || 'cash',
+                    transaction_id: transactionReference
+                });
+                await (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$db$2e$js__$5b$app$2d$route$5d$__$28$ecmascript$29$__["query"])(`INSERT INTO payments (booking_id, amount, payment_method, status, transaction_id) VALUES (?, ?, ?, 'completed', ?)`, [
                     bookingId,
                     parseFloat(body.total_price),
                     body.payment_method || 'cash',
                     transactionReference
                 ]);
+                console.log('Payment inserted successfully');
             } catch (payErr) {
                 console.error('Payments insert error (non-fatal):', payErr);
             }

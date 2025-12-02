@@ -26,6 +26,12 @@ function CustomersPage() {
         address: ""
     });
     const [searchTerm, setSearchTerm] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])("");
+    const [modal, setModal] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])({
+        isOpen: false,
+        type: null,
+        title: "",
+        message: ""
+    });
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         loadCustomers();
     }, []);
@@ -50,19 +56,39 @@ function CustomersPage() {
         e.preventDefault();
         // Strict validation
         if (!formData.first_name.trim()) {
-            alert("First Name is required");
+            setModal({
+                isOpen: true,
+                type: "error",
+                title: "Validation Error",
+                message: "First Name is required"
+            });
             return;
         }
         if (!formData.last_name.trim()) {
-            alert("Last Name is required");
+            setModal({
+                isOpen: true,
+                type: "error",
+                title: "Validation Error",
+                message: "Last Name is required"
+            });
             return;
         }
         if (formData.email && !isValidEmail(formData.email)) {
-            alert("Email must contain @ symbol (e.g., user@example.com)");
+            setModal({
+                isOpen: true,
+                type: "error",
+                title: "Validation Error",
+                message: "Email must contain @ symbol (e.g., user@example.com)"
+            });
             return;
         }
         if (formData.phone && !isValidPhoneNumber(formData.phone)) {
-            alert("Phone Number must contain only numbers");
+            setModal({
+                isOpen: true,
+                type: "error",
+                title: "Validation Error",
+                message: "Phone Number must contain only numbers"
+            });
             return;
         }
         const apiBase = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getApiBase"])();
@@ -79,9 +105,19 @@ function CustomersPage() {
                 if (resp.ok) {
                     await loadCustomers();
                     resetForm();
-                    alert("Customer updated successfully");
+                    setModal({
+                        isOpen: true,
+                        type: "success",
+                        title: "Success",
+                        message: "Customer updated successfully"
+                    });
                 } else {
-                    alert("Failed to update customer");
+                    setModal({
+                        isOpen: true,
+                        type: "error",
+                        title: "Error",
+                        message: "Failed to update customer"
+                    });
                 }
             } else {
                 // Create
@@ -95,14 +131,29 @@ function CustomersPage() {
                 if (resp.ok) {
                     await loadCustomers();
                     resetForm();
-                    alert("Customer created successfully");
+                    setModal({
+                        isOpen: true,
+                        type: "success",
+                        title: "Success",
+                        message: "Customer created successfully"
+                    });
                 } else {
-                    alert("Failed to create customer");
+                    setModal({
+                        isOpen: true,
+                        type: "error",
+                        title: "Error",
+                        message: "Failed to create customer"
+                    });
                 }
             }
         } catch (error) {
             console.error("Error saving customer:", error);
-            alert("Error saving customer");
+            setModal({
+                isOpen: true,
+                type: "error",
+                title: "Error",
+                message: "Error saving customer"
+            });
         }
     };
     const isValidEmail = (email)=>{
@@ -124,7 +175,6 @@ function CustomersPage() {
         });
     };
     const handleDelete = async (id)=>{
-        if (!confirm("Delete this customer? Active bookings will prevent deletion.")) return;
         const apiBase = (0, __TURBOPACK__imported__module__$5b$project$5d2f$lib$2f$api$2e$ts__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getApiBase"])();
         try {
             const resp = await fetch(`${apiBase}/customers?id=${id}`, {
@@ -132,14 +182,29 @@ function CustomersPage() {
             });
             if (resp.ok) {
                 await loadCustomers();
-                alert("Customer deleted successfully");
+                setModal({
+                    isOpen: true,
+                    type: "success",
+                    title: "Success",
+                    message: "Customer deleted successfully"
+                });
             } else {
                 const errorData = await resp.json();
-                alert(`Failed to delete: ${errorData.error}`);
+                setModal({
+                    isOpen: true,
+                    type: "error",
+                    title: "Error",
+                    message: `Failed to delete: ${errorData.error}`
+                });
             }
         } catch (error) {
             console.error("Error deleting customer:", error);
-            alert("Error deleting customer");
+            setModal({
+                isOpen: true,
+                type: "error",
+                title: "Error",
+                message: "Error deleting customer"
+            });
         }
     };
     const handleEdit = (customer)=>{
@@ -171,7 +236,7 @@ function CustomersPage() {
             children: "Loading customers..."
         }, void 0, false, {
             fileName: "[project]/app/(dashboard)/customers/page.tsx",
-            lineNumber: 182,
+            lineNumber: 253,
             columnNumber: 12
         }, this);
     }
@@ -186,7 +251,7 @@ function CustomersPage() {
                         children: "Customers"
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                        lineNumber: 188,
+                        lineNumber: 259,
                         columnNumber: 9
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -195,13 +260,13 @@ function CustomersPage() {
                         children: "Add Customer"
                     }, void 0, false, {
                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                        lineNumber: 189,
+                        lineNumber: 260,
                         columnNumber: 9
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                lineNumber: 187,
+                lineNumber: 258,
                 columnNumber: 7
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
@@ -212,7 +277,7 @@ function CustomersPage() {
                 className: "w-full px-4 py-2 border border-(--gray-light) rounded"
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                lineNumber: 198,
+                lineNumber: 269,
                 columnNumber: 7
             }, this),
             showForm && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -226,7 +291,7 @@ function CustomersPage() {
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                        lineNumber: 209,
+                        lineNumber: 280,
                         columnNumber: 11
                     }, this),
                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("form", {
@@ -236,81 +301,122 @@ function CustomersPage() {
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "grid grid-cols-2 gap-4",
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "text",
-                                        placeholder: "First Name",
-                                        value: formData.first_name,
-                                        onChange: (e)=>setFormData({
-                                                ...formData,
-                                                first_name: e.target.value
-                                            }),
-                                        required: true,
-                                        className: "px-3 py-2 border border-(--gray-light) rounded"
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                            type: "text",
+                                            placeholder: "First Name",
+                                            value: formData.first_name,
+                                            onChange: (e)=>setFormData({
+                                                    ...formData,
+                                                    first_name: e.target.value
+                                                }),
+                                            required: true,
+                                            className: "w-full px-3 py-2 border border-(--gray-light) rounded"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(dashboard)/customers/page.tsx",
+                                            lineNumber: 284,
+                                            columnNumber: 17
+                                        }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 212,
+                                        lineNumber: 283,
                                         columnNumber: 15
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "text",
-                                        placeholder: "Last Name",
-                                        value: formData.last_name,
-                                        onChange: (e)=>setFormData({
-                                                ...formData,
-                                                last_name: e.target.value
-                                            }),
-                                        required: true,
-                                        className: "px-3 py-2 border border-(--gray-light) rounded"
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                            type: "text",
+                                            placeholder: "Last Name",
+                                            value: formData.last_name,
+                                            onChange: (e)=>setFormData({
+                                                    ...formData,
+                                                    last_name: e.target.value
+                                                }),
+                                            required: true,
+                                            className: "w-full px-3 py-2 border border-(--gray-light) rounded"
+                                        }, void 0, false, {
+                                            fileName: "[project]/app/(dashboard)/customers/page.tsx",
+                                            lineNumber: 294,
+                                            columnNumber: 17
+                                        }, this)
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 220,
+                                        lineNumber: 293,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                lineNumber: 211,
+                                lineNumber: 282,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                                 className: "grid grid-cols-2 gap-4",
                                 children: [
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "email",
-                                        placeholder: "Email",
-                                        value: formData.email,
-                                        onChange: (e)=>setFormData({
-                                                ...formData,
-                                                email: e.target.value
-                                            }),
-                                        className: "px-3 py-2 border border-(--gray-light) rounded"
-                                    }, void 0, false, {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                type: "email",
+                                                placeholder: "Email (optional, must contain @)",
+                                                value: formData.email,
+                                                onChange: (e)=>setFormData({
+                                                        ...formData,
+                                                        email: e.target.value
+                                                    }),
+                                                className: `w-full px-3 py-2 border rounded ${formData.email && !isValidEmail(formData.email) ? 'border-red-500 bg-red-50' : 'border-(--gray-light)'}`
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/(dashboard)/customers/page.tsx",
+                                                lineNumber: 306,
+                                                columnNumber: 17
+                                            }, this),
+                                            formData.email && !isValidEmail(formData.email) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "text-xs text-red-600 mt-1",
+                                                children: "Email must contain @ symbol"
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/(dashboard)/customers/page.tsx",
+                                                lineNumber: 318,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 230,
+                                        lineNumber: 305,
                                         columnNumber: 15
                                     }, this),
-                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
-                                        type: "tel",
-                                        placeholder: "Phone",
-                                        value: formData.phone,
-                                        onChange: (e)=>setFormData({
-                                                ...formData,
-                                                phone: e.target.value
-                                            }),
-                                        className: "px-3 py-2 border border-(--gray-light) rounded"
-                                    }, void 0, false, {
+                                    /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                                        children: [
+                                            /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("input", {
+                                                type: "text",
+                                                placeholder: "Phone (optional, numbers only)",
+                                                value: formData.phone,
+                                                onChange: (e)=>handlePhoneInput(e.target.value),
+                                                className: `w-full px-3 py-2 border rounded ${formData.phone && !isValidPhoneNumber(formData.phone) ? 'border-red-500 bg-red-50' : 'border-(--gray-light)'}`
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/(dashboard)/customers/page.tsx",
+                                                lineNumber: 322,
+                                                columnNumber: 17
+                                            }, this),
+                                            formData.phone && !isValidPhoneNumber(formData.phone) && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                                                className: "text-xs text-red-600 mt-1",
+                                                children: "Phone must contain only numbers"
+                                            }, void 0, false, {
+                                                fileName: "[project]/app/(dashboard)/customers/page.tsx",
+                                                lineNumber: 334,
+                                                columnNumber: 19
+                                            }, this)
+                                        ]
+                                    }, void 0, true, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 237,
+                                        lineNumber: 321,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                lineNumber: 229,
+                                lineNumber: 304,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("textarea", {
-                                placeholder: "Address",
+                                placeholder: "Address (optional)",
                                 value: formData.address,
                                 onChange: (e)=>setFormData({
                                         ...formData,
@@ -320,7 +426,7 @@ function CustomersPage() {
                                 rows: 3
                             }, void 0, false, {
                                 fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                lineNumber: 245,
+                                lineNumber: 338,
                                 columnNumber: 13
                             }, this),
                             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -328,11 +434,12 @@ function CustomersPage() {
                                 children: [
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                         type: "submit",
-                                        className: "px-6 py-2 bg-(--yellow) text-(--gray-dark) rounded font-bold hover:bg-yellow-400",
+                                        disabled: !formData.first_name.trim() || !formData.last_name.trim() || !!formData.email && !isValidEmail(formData.email) || !!formData.phone && !isValidPhoneNumber(formData.phone),
+                                        className: "px-6 py-2 bg-(--yellow) text-(--gray-dark) rounded font-bold hover:bg-yellow-400 disabled:opacity-50 disabled:cursor-not-allowed",
                                         children: "Save"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 253,
+                                        lineNumber: 346,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -342,25 +449,25 @@ function CustomersPage() {
                                         children: "Cancel"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 259,
+                                        lineNumber: 353,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                lineNumber: 252,
+                                lineNumber: 345,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                        lineNumber: 210,
+                        lineNumber: 281,
                         columnNumber: 11
                     }, this)
                 ]
             }, void 0, true, {
                 fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                lineNumber: 208,
+                lineNumber: 279,
                 columnNumber: 9
             }, this),
             /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -377,7 +484,7 @@ function CustomersPage() {
                                         children: "Name"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 276,
+                                        lineNumber: 370,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -385,7 +492,7 @@ function CustomersPage() {
                                         children: "Email"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 277,
+                                        lineNumber: 371,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -393,7 +500,7 @@ function CustomersPage() {
                                         children: "Phone"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 278,
+                                        lineNumber: 372,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -401,7 +508,7 @@ function CustomersPage() {
                                         children: "Address"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 279,
+                                        lineNumber: 373,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -409,7 +516,7 @@ function CustomersPage() {
                                         children: "Joined"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 280,
+                                        lineNumber: 374,
                                         columnNumber: 15
                                     }, this),
                                     /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("th", {
@@ -417,18 +524,18 @@ function CustomersPage() {
                                         children: "Actions"
                                     }, void 0, false, {
                                         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                        lineNumber: 281,
+                                        lineNumber: 375,
                                         columnNumber: 15
                                     }, this)
                                 ]
                             }, void 0, true, {
                                 fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                lineNumber: 275,
+                                lineNumber: 369,
                                 columnNumber: 13
                             }, this)
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                            lineNumber: 274,
+                            lineNumber: 368,
                             columnNumber: 11
                         }, this),
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("tbody", {
@@ -444,7 +551,7 @@ function CustomersPage() {
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                            lineNumber: 287,
+                                            lineNumber: 381,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -452,7 +559,7 @@ function CustomersPage() {
                                             children: customer.email || "-"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                            lineNumber: 290,
+                                            lineNumber: 384,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -460,7 +567,7 @@ function CustomersPage() {
                                             children: customer.phone || "-"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                            lineNumber: 291,
+                                            lineNumber: 385,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -468,7 +575,7 @@ function CustomersPage() {
                                             children: customer.address || "-"
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                            lineNumber: 292,
+                                            lineNumber: 386,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -476,7 +583,7 @@ function CustomersPage() {
                                             children: new Date(customer.created_at).toLocaleDateString()
                                         }, void 0, false, {
                                             fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                            lineNumber: 293,
+                                            lineNumber: 387,
                                             columnNumber: 17
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("td", {
@@ -488,7 +595,7 @@ function CustomersPage() {
                                                     children: "Edit"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                                    lineNumber: 297,
+                                                    lineNumber: 391,
                                                     columnNumber: 19
                                                 }, this),
                                                 /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
@@ -497,35 +604,35 @@ function CustomersPage() {
                                                     children: "Delete"
                                                 }, void 0, false, {
                                                     fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                                    lineNumber: 303,
+                                                    lineNumber: 397,
                                                     columnNumber: 19
                                                 }, this)
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                            lineNumber: 296,
+                                            lineNumber: 390,
                                             columnNumber: 17
                                         }, this)
                                     ]
                                 }, customer.id, true, {
                                     fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                                    lineNumber: 286,
+                                    lineNumber: 380,
                                     columnNumber: 15
                                 }, this))
                         }, void 0, false, {
                             fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                            lineNumber: 284,
+                            lineNumber: 378,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
                     fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                    lineNumber: 273,
+                    lineNumber: 367,
                     columnNumber: 9
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                lineNumber: 272,
+                lineNumber: 366,
                 columnNumber: 7
             }, this),
             filteredCustomers.length === 0 && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
@@ -535,18 +642,62 @@ function CustomersPage() {
                     children: searchTerm ? "No customers match your search." : "No customers found."
                 }, void 0, false, {
                     fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                    lineNumber: 318,
+                    lineNumber: 412,
                     columnNumber: 11
                 }, this)
             }, void 0, false, {
                 fileName: "[project]/app/(dashboard)/customers/page.tsx",
-                lineNumber: 317,
+                lineNumber: 411,
+                columnNumber: 9
+            }, this),
+            modal.isOpen && /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                className: "fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4",
+                children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
+                    className: `bg-white rounded-lg p-6 max-w-sm w-full shadow-lg border-l-4 ${modal.type === "success" ? "border-green-500" : "border-red-500"}`,
+                    children: [
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("h2", {
+                            className: `text-lg font-bold mb-2 ${modal.type === "success" ? "text-green-600" : "text-red-600"}`,
+                            children: modal.title
+                        }, void 0, false, {
+                            fileName: "[project]/app/(dashboard)/customers/page.tsx",
+                            lineNumber: 424,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("p", {
+                            className: "text-gray-700 mb-6",
+                            children: modal.message
+                        }, void 0, false, {
+                            fileName: "[project]/app/(dashboard)/customers/page.tsx",
+                            lineNumber: 429,
+                            columnNumber: 13
+                        }, this),
+                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
+                            onClick: ()=>setModal({
+                                    ...modal,
+                                    isOpen: false
+                                }),
+                            className: "w-full py-2 bg-(--primary-blue) text-white rounded font-bold hover:bg-blue-900 transition-colors",
+                            children: "Close"
+                        }, void 0, false, {
+                            fileName: "[project]/app/(dashboard)/customers/page.tsx",
+                            lineNumber: 430,
+                            columnNumber: 13
+                        }, this)
+                    ]
+                }, void 0, true, {
+                    fileName: "[project]/app/(dashboard)/customers/page.tsx",
+                    lineNumber: 421,
+                    columnNumber: 11
+                }, this)
+            }, void 0, false, {
+                fileName: "[project]/app/(dashboard)/customers/page.tsx",
+                lineNumber: 420,
                 columnNumber: 9
             }, this)
         ]
     }, void 0, true, {
         fileName: "[project]/app/(dashboard)/customers/page.tsx",
-        lineNumber: 186,
+        lineNumber: 257,
         columnNumber: 5
     }, this);
 }

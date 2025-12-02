@@ -15,11 +15,24 @@ interface Transaction {
   created_at: string
 }
 
+interface ModalState {
+  isOpen: boolean
+  type: "success" | "error" | null
+  title: string
+  message: string
+}
+
 export default function TransactionsPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [loading, setLoading] = useState(false)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [editData, setEditData] = useState<Partial<Transaction>>({})
+  const [modal, setModal] = useState<ModalState>({
+    isOpen: false,
+    type: null,
+    title: "",
+    message: "",
+  })
 
   // Load transactions on mount
   useEffect(() => {
@@ -54,13 +67,28 @@ export default function TransactionsPage() {
       })
       if (resp.ok) {
         setTransactions(transactions.filter((t) => t.id !== id))
-        alert("Transaction deleted successfully")
+        setModal({
+          isOpen: true,
+          type: "success",
+          title: "Success",
+          message: "Transaction deleted successfully",
+        })
       } else {
-        alert("Failed to delete transaction")
+        setModal({
+          isOpen: true,
+          type: "error",
+          title: "Error",
+          message: "Failed to delete transaction",
+        })
       }
     } catch (error) {
       console.error("Error deleting transaction:", error)
-      alert("Error deleting transaction")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Error",
+        message: "Error deleting transaction",
+      })
     }
   }
 
@@ -89,13 +117,28 @@ export default function TransactionsPage() {
         )
         setEditingId(null)
         setEditData({})
-        alert("Transaction updated successfully")
+        setModal({
+          isOpen: true,
+          type: "success",
+          title: "Success",
+          message: "Transaction updated successfully",
+        })
       } else {
-        alert("Failed to update transaction")
+        setModal({
+          isOpen: true,
+          type: "error",
+          title: "Error",
+          message: "Failed to update transaction",
+        })
       }
     } catch (error) {
       console.error("Error updating transaction:", error)
-      alert("Error updating transaction")
+      setModal({
+        isOpen: true,
+        type: "error",
+        title: "Error",
+        message: "Error updating transaction",
+      })
     }
   }
 
@@ -252,6 +295,28 @@ export default function TransactionsPage() {
       {transactions.length === 0 && (
         <div className="text-center py-12 bg-(--gray-bg) rounded">
           <p className="text-(--gray-dark)">No transactions found.</p>
+        </div>
+      )}
+
+      {/* Modal */}
+      {modal.isOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className={`bg-white rounded-lg p-6 max-w-sm w-full shadow-lg border-l-4 ${
+            modal.type === "success" ? "border-green-500" : "border-red-500"
+          }`}>
+            <h2 className={`text-lg font-bold mb-2 ${
+              modal.type === "success" ? "text-green-600" : "text-red-600"
+            }`}>
+              {modal.title}
+            </h2>
+            <p className="text-gray-700 mb-6">{modal.message}</p>
+            <button
+              onClick={() => setModal({ ...modal, isOpen: false })}
+              className="w-full py-2 bg-(--primary-blue) text-white rounded font-bold hover:bg-blue-900 transition-colors"
+            >
+              Close
+            </button>
+          </div>
         </div>
       )}
     </div>

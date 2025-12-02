@@ -150,6 +150,7 @@ export default function PaymentPage() {
           check_out: booking.dateTo,
           guests: 1,
           total_price: booking.totalAmount,
+          payment_method: paymentMethod,
         }
 
         const resp = await fetch(`${API_BASE}/bookings?action=create`, {
